@@ -25,7 +25,7 @@ provider:
   stage: prod
   endpointType: regional
   environment:
-    USER_DATA: ${self:service}-${opt:stage, self:provider.stage}
+    USER_DATA1: ${self:service}-${opt:stage, self:provider.stage}
     # COGNITO_IDENTITY_POOL_ID: us-east-1:d2e0b0ad-1144-4406-a9a9-27a73c68d185
   iamRoleStatements:
     - Effect: Allow
@@ -33,7 +33,7 @@ provider:
         - dynamodb:Query
         - dynamodb:PutItem
         - dynamodb:DeleteItem
-      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.USER_DATA}"
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.USER_DATA1}"
 
 
 
@@ -52,11 +52,11 @@ functions:
 
 resources:
   Resources:
-    UserData:
+    UserData1:
       Type: AWS::DynamoDB::Table
       DeletionPolicy: Retain
       Properties:
-        TableName: ${self:provider.environment.USER_DATA}
+        TableName: ${self:provider.environment.USER_DATA1}
         AttributeDefinitions:
           - AttributeName: user_id
             AttributeType: S

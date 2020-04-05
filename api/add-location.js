@@ -10,7 +10,7 @@ const uuidv4 = require('uuid/v4');
 const util = require('./util.js');
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
-const tableName = process.env.USER_DATA;
+const tableName = process.env.USER_DATA1;
 
 exports.handler = async (event) => {
     try {
