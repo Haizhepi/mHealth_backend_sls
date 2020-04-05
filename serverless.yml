@@ -38,8 +38,16 @@ provider:
 
 
 functions:
-  hello:
-    handler: handler.hello
+  add-location:
+    handler: api/add-location.handler
+    description: POST /location
+    events:
+      - http:
+          path: location
+          method: post 
+          cors:
+            origin: '*'
+            headers: ${self:custom.allowedHeaders}
 
 
 resources:
@@ -61,8 +69,6 @@ resources:
         KeySchema:
           - AttributeName: user_id
             KeyType: HASH
-          - AttributeName: timestamp
-            KeyType: RANGE
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
