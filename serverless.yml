@@ -77,8 +77,6 @@ resources:
                 KeyType: HASH
               - AttributeName: weight
                 KeyType: RANGE
-              - AttributeName: timestamp
-                KeyType: RANGE
             Projection:
               ProjectionType: ALL
             ProvisionedThroughput:
