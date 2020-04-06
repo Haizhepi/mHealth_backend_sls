@@ -78,7 +78,7 @@ resources:
               - AttributeName: weight
                 KeyType: RANGE
               - AttributeName: timestamp
-                AttributeType: N
+                KeyType: RANGE
             Projection:
               ProjectionType: ALL
             ProvisionedThroughput:
