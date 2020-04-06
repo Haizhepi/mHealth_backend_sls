@@ -60,8 +60,6 @@ resources:
         AttributeDefinitions:
           - AttributeName: user_id
             AttributeType: S
-          - AttributeName: timestamp
-            AttributeType: N
           - AttributeName: age
             AttributeType: N
           - AttributeName: weight
@@ -79,6 +77,8 @@ resources:
                 KeyType: HASH
               - AttributeName: weight
                 KeyType: RANGE
+              - AttributeName: timestamp
+                AttributeType: N
             Projection:
               ProjectionType: ALL
             ProvisionedThroughput:
