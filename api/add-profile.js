@@ -11,7 +11,7 @@ const util = require('./util.js');
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 const tableName = process.env.USER_DATA1;
-
+// small changes
 exports.handler = async (event) => {
     try {
         let item  = JSON.parse(event.body).Item;
