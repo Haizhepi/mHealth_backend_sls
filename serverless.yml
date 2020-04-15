@@ -26,6 +26,8 @@ provider:
   endpointType: regional
   environment:
     USER_DATA1: ${self:service}-${opt:stage, self:provider.stage}
+    BPD1: ${self:service}-${opt:stage, self:provider.stage}
+
     # COGNITO_IDENTITY_POOL_ID: us-east-1:d2e0b0ad-1144-4406-a9a9-27a73c68d185
   iamRoleStatements:
     - Effect: Allow
@@ -33,7 +35,10 @@ provider:
         - dynamodb:Query
         - dynamodb:PutItem
         - dynamodb:DeleteItem
-      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.USER_DATA1}"
+      Resource: 
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.USER_DATA1}"
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.BPD1}"
+
 
 
 
@@ -48,10 +53,72 @@ functions:
           cors:
             origin: '*'
             headers: ${self:custom.allowedHeaders}
+  add-profile:
+    handler: api/add-profile.handler
+    description: POST /profile
+    events:
+      - http:
+          path: profile
+          method: post
+          cors:
+            origin: '*'
+            headers: ${self:custom.allowedHeaders}
+  get-user-profile:
+    handler: api/get-user-profile.handler
+    description: GET /profile/{user_id}
+    events:
+      - http:
+          path: /profile/{user_id}
+          method: get
+          cors:
+            origin: '*'
+            headers: ${self:custom.allowedHeaders}
 
 
 resources:
   Resources:
+    BloodPressureData1:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:provider.environment.BPD1}
+        AttributeDefinitions:
+          - AttributeName: user_id
+            AttributeType: S
+          - AttributeName: high
+            AttributeType: N
+          - AttributeName: low
+            AttributeType: N
+        KeySchema:
+          - AttributeName: user_id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        GlobalSecondaryIndexes:
+          - IndexName: high-BP-index
+            KeySchema:
+              - AttributeName: user_id
+                KeyType: HASH
+              - AttributeName: high
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+          - IndexName: low-BP-index
+            KeySchema:
+              - AttributeName: user_id
+                KeyType: HASH
+              - AttributeName: low
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+
     UserData1:
       Type: AWS::DynamoDB::Table
       DeletionPolicy: Retain
