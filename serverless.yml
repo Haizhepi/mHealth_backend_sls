@@ -34,6 +34,8 @@ provider:
         - dynamodb:Query
         - dynamodb:PutItem
         - dynamodb:DeleteItem
+        - ses:SendEmail
+        - ses:SendRawEmail
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/USER_DATA1"
 
     - Effect: Allow
@@ -41,6 +43,8 @@ provider:
         - dynamodb:Query
         - dynamodb:PutItem
         - dynamodb:DeleteItem
+        - ses:SendEmail
+        - ses:SendRawEmail
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/BPD1"
 
 functions:
@@ -80,6 +84,16 @@ functions:
     events:
       - http:
           path: /profile/{user_id}
+          method: get
+          cors:
+            origin: '*'
+            headers: ${self:custom.allowedHeaders}
+  send-blood-report:
+    handler: api/send-blood-report.handler
+    description: GET /report
+    events:
+      - http:
+          path: /report
           method: get
           cors:
             origin: '*'
